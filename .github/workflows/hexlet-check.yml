@@ -12,13 +12,30 @@ on:
     tags:
       - '**'
 
+env:
+  CI: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [20.x]
+
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Hexlet project check
         uses: hexlet/project-action@release
         with:
           hexlet-id: ${{ secrets.HEXLET_ID }}
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      - run: make install
+      - run: make lint
+      - run: make test
