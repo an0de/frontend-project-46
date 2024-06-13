@@ -10,25 +10,23 @@ const makeDiffItem = (name, value, type) => ({
 });
 
 const makeDiffList = (obj1, obj2) => Object.keys({ ...obj1, ...obj2 })
-  .sort()
+  .toSorted()
   .reduce((acc, name) => {
     const value1 = obj1[name];
     const value2 = obj2[name];
     if (value1 === undefined) {
-      acc.push(makeDiffItem(name, value2, ADD_ACTION));
-    } else if (value2 === undefined) {
-      acc.push(makeDiffItem(name, value1, RM_ACTION));
-    } else if (typeof value1 === typeof value2 && typeof value1 === 'object') {
-      acc.push(
-        makeDiffItem(name, makeDiffList(value1, value2), HOLD_ACTION),
-      );
-    } else if (value1 !== value2) {
-      acc.push(makeDiffItem(name, value1, RM_ACTION));
-      acc.push(makeDiffItem(name, value2, ADD_ACTION));
-    } else {
-      acc.push(makeDiffItem(name, value1, HOLD_ACTION));
+      return [...acc, makeDiffItem(name, value2, ADD_ACTION)];
+    } if (value2 === undefined) {
+      return [...acc, makeDiffItem(name, value1, RM_ACTION)];
+    } if (typeof value1 === typeof value2 && typeof value1 === 'object') {
+      return [
+        ...acc, makeDiffItem(name, makeDiffList(value1, value2), HOLD_ACTION),
+      ];
+    } if (value1 !== value2) {
+      return [...acc, makeDiffItem(name, value1, RM_ACTION),
+        makeDiffItem(name, value2, ADD_ACTION)];
     }
-    return acc;
+    return [...acc, makeDiffItem(name, value1, HOLD_ACTION)];
   }, []);
 
 const genDiff = (filePath1, filePath2, formatName) => {

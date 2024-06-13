@@ -25,21 +25,23 @@ const stylishComplex = (complexValue, lvl, pad = 4) => `${Object.entries(complex
   '{',
 )}\n${padStart(null, lvl)}}`;
 
-const getStylishValue = (value, pad, complex = false) => {
-  if (Array.isArray(value) === true) {
-    return stylish(value, pad);
-  }
-  if (complex === true) {
-    return stylishComplex(value, pad);
-  }
-  return value;
-};
+const stylish = (diffList, lvl = 0, pad = 4) => {
+  const getStylishValue = (value, valuePad, complex = false) => {
+    if (Array.isArray(value) === true) {
+      return stylish(value, valuePad);
+    }
+    if (complex === true) {
+      return stylishComplex(value, valuePad);
+    }
+    return value;
+  };
 
-const stylish = (diffList, lvl = 0, pad = 4) => `${diffList.reduce((acc, {
-  name, value, type, complex,
-}) => {
-  const line = fmtLine(type, name, getStylishValue(value, lvl + pad, complex), lvl + pad);
-  return `${acc}\n${line}`;
-}, '{')}\n${padStart(null, lvl)}}`;
+  return `${diffList.reduce((acc, {
+    name, value, type, complex,
+  }) => {
+    const line = fmtLine(type, name, getStylishValue(value, lvl + pad, complex), lvl + pad);
+    return `${acc}\n${line}`;
+  }, '{')}\n${padStart(null, lvl)}}`;
+};
 
 export default stylish;

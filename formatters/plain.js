@@ -31,12 +31,11 @@ const collectLines = (diffList, objName = null) => diffList
   .reduce((acc, { name, value, type }, index) => {
     const { name: prevName, value: prevValue, type: prevType } = diffList[index - 1] ?? {};
     if (Array.isArray(value) === true) {
-      acc.push(...collectLines(value, getPropertyName(objName, name)));
-    } else if (name === prevName && prevType === RM_ACTION && type === ADD_ACTION) {
-      acc.pop();
-      acc.push(makeUpdateLine(objName, name, prevValue, value));
-    } else if (type === RM_ACTION || type === ADD_ACTION) {
-      acc.push(makeLine(objName, name, value, type));
+      return [...acc, ...collectLines(value, getPropertyName(objName, name))];
+    } if (name === prevName && prevType === RM_ACTION && type === ADD_ACTION) {
+      return [...acc.slice(0, -1), makeUpdateLine(objName, name, prevValue, value)];
+    } if (type === RM_ACTION || type === ADD_ACTION) {
+      return [...acc, makeLine(objName, name, value, type)];
     }
     return acc;
   }, []);
