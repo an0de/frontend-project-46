@@ -8,8 +8,8 @@ test:
 	npx jest
 
 test-cov:
-	curl -L $(CC_TEST_REP_URL) $(CC_TEST_REP) 
-	chmod +x .$(CC_TEST_REP)
+	curl -L -o $(CC_TEST_REP) $(CC_TEST_REP_URL)
+	chmod +x $(CC_TEST_REP)
 	$(CC_TEST_REP) before-build
 	npx jest --coverage
 	$(CC_TEST_REP) after-build
