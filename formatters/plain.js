@@ -27,26 +27,18 @@ const makeUpdateLine = (objName, propName, value1, value2) => `Property \
 '${getPropertyName(objName, propName)}' was updated. \
 From ${getValue(value1)} to ${getValue(value2)}`;
 
-const collectLines = (diffList, objName = null) => {
-  const lines = [];
-  let index = 0;
-  while (index !== diffList.length) {
-    const { name, value, type } = diffList[index];
-    const { name: nextName, value: nextValue, type: nextType } = diffList[index + 1] ?? {};
+const collectLines = (diffList, objName = null) => diffList
+  .reduce((acc, { name, value, type }, index) => {
+    const { name: prevName, value: prevValue, type: prevType } = diffList[index - 1] ?? {};
     if (Array.isArray(value) === true) {
-      lines.push(...collectLines(value, getPropertyName(objName, name)));
-      index += 1;
-    } else if (name === nextName && type === RM_ACTION && nextType === ADD_ACTION) {
-      lines.push(makeUpdateLine(objName, name, value, nextValue));
-      index += 2;
+      acc.push(...collectLines(value, getPropertyName(objName, name)));
+    } else if (name === prevName && prevType === RM_ACTION && type === ADD_ACTION) {
+      acc.pop();
+      acc.push(makeUpdateLine(objName, name, prevValue, value));
     } else if (type === RM_ACTION || type === ADD_ACTION) {
-      lines.push(makeLine(objName, name, value, type));
-      index += 1;
-    } else {
-      index += 1;
+      acc.push(makeLine(objName, name, value, type));
     }
-  }
-  return lines;
-};
+    return acc;
+  }, []);
 
 export default (diffList) => collectLines(diffList).join('\n');
