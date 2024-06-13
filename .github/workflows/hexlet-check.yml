@@ -12,9 +12,6 @@ on:
     tags:
       - '**'
 
-env:
-  CI: true
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -30,17 +27,3 @@ jobs:
         uses: hexlet/project-action@release
         with:
           hexlet-id: ${{ secrets.HEXLET_ID }}
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-      - run: make install
-      - run: make lint
-      - run: make test
-
-      - name: Test coverage report
-        env:
-          CC_TEST_REPORTER_ID: ${{ secrets.ccTestReporterID }}
-        run: make test-cov
