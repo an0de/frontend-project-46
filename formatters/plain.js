@@ -32,19 +32,11 @@ const collectLines = (diffList, objName = null) => {
   let index = 0;
   while (index !== diffList.length) {
     const { name, value, type } = diffList[index];
-    const {
-      name: nextName,
-      value: nextValue,
-      type: nextType,
-    } = diffList[index + 1] ?? {};
+    const { name: nextName, value: nextValue, type: nextType } = diffList[index + 1] ?? {};
     if (Array.isArray(value) === true) {
       lines.push(...collectLines(value, getPropertyName(objName, name)));
       index += 1;
-    } else if (
-      name === nextName
-      && type === RM_ACTION
-      && nextType === ADD_ACTION
-    ) {
+    } else if (name === nextName && type === RM_ACTION && nextType === ADD_ACTION) {
       lines.push(makeUpdateLine(objName, name, value, nextValue));
       index += 2;
     } else if (type === RM_ACTION || type === ADD_ACTION) {

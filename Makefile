@@ -1,11 +1,15 @@
-install:
-	npm i
+CC_TEST_REP_URL = https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
+CC_TEST_REP = ./cc-test-reporter
 
 test:
 	NODE_OPTIONS=--experimental-vm-modules npx jest
 
 test-cov:
+	curl -L $(CC_TEST_REP_URL) $(CC_TEST_REP) 
+	chmod +x .$(CC_TEST_REP)
+	$(CC_TEST_REP) before-build
 	NODE_OPTIONS=--experimental-vm-modules npx jest --coverage
+	$(CC_TEST_REP) after-build
 
 lint:
 	npx eslint src __tests__ formatters bin
@@ -13,4 +17,4 @@ lint:
 fix:
 	npx eslint --fix src __tests__ formatters bin
 
-.PHONY: test test-index lint fmt
+.PHONY: test test-cov lint fix
