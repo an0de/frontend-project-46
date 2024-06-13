@@ -2,13 +2,13 @@ CC_TEST_REP_URL = https://codeclimate.com/downloads/test-reporter/test-reporter-
 CC_TEST_REP = ./cc-test-reporter
 
 test:
-	NODE_OPTIONS=--experimental-vm-modules npx jest
+	npx jest
 
 test-cov:
 	curl -L $(CC_TEST_REP_URL) $(CC_TEST_REP) 
 	chmod +x .$(CC_TEST_REP)
 	$(CC_TEST_REP) before-build
-	NODE_OPTIONS=--experimental-vm-modules npx jest --coverage
+	npx jest --coverage
 	$(CC_TEST_REP) after-build
 
 lint:

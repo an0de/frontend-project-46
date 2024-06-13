@@ -39,3 +39,8 @@ jobs:
       - run: make install
       - run: make lint
       - run: make test
+
+      - name: Test coverage report
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.ccTestReporterID }}
+        run: make test-cov
